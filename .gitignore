@@ -1,0 +1,4 @@
+# Secrets
+keys/*
+key/*
+!keys/README.md
