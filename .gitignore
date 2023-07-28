@@ -2,3 +2,12 @@
 keys/*
 key/*
 !keys/README.md
+
+# Image Files
+images/*
+images/
+image/*
+image/
+
+# YOLO Files
+*.pt
