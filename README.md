@@ -9,3 +9,8 @@ And then, you can use [anaconda](https://www.anaconda.com/) to
 conda env export > environment.yml
 conda env create -f environment.yml
 ```
+
+## Studies
+
+- [OpenCV and Computer Vision](https://github.com/unchaptered/opencv-and-computer-vison)
+- [OpenCV and Computer Vision Advanced](https://github.com/unchaptered/opencv-and-computer-vison-advanced)

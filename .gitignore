@@ -3,11 +3,13 @@ keys/*
 key/*
 !keys/README.md
 
-# Image Files
-images/*
-images/
-image/*
-image/
+# Assets Files
+assets/*
+assets/
+secrets/*
+secure/*
+*/secrets/*
+*/secure/*
 
 # YOLO Files
 *.pt
