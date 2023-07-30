@@ -156,22 +156,43 @@ def detectIdCard(imgPath: str ='./images/kevin_id_card.jpg'):
         print('이미지 없음')
     else:
         
+        # [STEP 1] Find card area.
+        # [STEP 1-A] Resize Image more smaller than origin image.
         resizedImg = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
         cv2.imshow(imgPath, resizedImg)
         cv2.waitKey(0)
         
-        # [STEP 1] 최소단위 사각형 구하기
+        # [STEP 1-B] Convert to grayscale image.
         grayImg = cv2.cvtColor(resizedImg, cv2.COLOR_BGR2GRAY)
         cv2.imshow(imgPath, grayImg)
         cv2.waitKey(0)
-
+        
+        # [STEP 1-C] Convert to binary image.
         _, thresholdImg = cv2.threshold(grayImg, 127, 255, cv2.THRESH_BINARY)
         cv2.imshow(imgPath, thresholdImg)
         cv2.waitKey(0)
         
+        # [STEP 1-D] Find ID Card
+        # [STEP 1-D-a] Find all contours
         contours, _ = cv2.findContours(thresholdImg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # [STEP 1-D-b] Find max contour
         maxContour = max(contours, key=cv2.contourArea)
+    
+        # [STEP 1-D-c] GET Bounding Rect
         x, y, width, height= cv2.boundingRect(maxContour)
+        copiedGray = grayImg.copy()
+        cv2.rectangle(
+            img=copiedGray,
+            pt1=(x, y),
+            pt2=(x + width, y +height),
+            color=(0, 255, 0),
+            thickness=3
+        )
+        cv2.imshow('img', copiedGray)
+        cv2.waitKey(0)
+        
+        # [STEP 1-E] Crop with padding
         paddingX = ceil(width * 0.03)
         paddingY = ceil(height * 0.03)
         minAreaImgV1 = resizedImg[
@@ -183,23 +204,31 @@ def detectIdCard(imgPath: str ='./images/kevin_id_card.jpg'):
         cv2.imshow(imgPath, minAreaImgV1)
         cv2.waitKey(0)
         
-        grayMinAreaImgV1 = grayImg = cv2.cvtColor(minAreaImgV1, cv2.COLOR_BGR2GRAY)
+        # [STEP 1-F] Convert grayscale image, after crop.
+        grayMinAreaImgV1 = cv2.cvtColor(minAreaImgV1, cv2.COLOR_BGR2GRAY)
         
-        # [STEP 2] 원근 복구
+        # [STEP 2] Recover perspective conversion
+        # [STEP 2-A] Edge Detection
         edgedImg = cv2.Canny(grayMinAreaImgV1.copy(), 75, 200)
+
+        # [STEP 2-B] Find all contours
         contours, hierarchy = cv2.findContours(
             edgedImg,
             cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_NONE
             # cv2.CHAIN_APPROX_SIMPLE
         )
-        # contour 중 네 꼭짓점을 찾아내기 위해 가장 큰 contour를 선택합니다.
+    
+        # [STEP 2-C] Find max contours
         maxContour = max(contours, key=cv2.contourArea)
 
-        # contour를 근사화하여 꼭짓점 좌표 추출
+        # [STEP 2-D-a] Calculates the perimeter length of the given contour (polygon boundary).
         epsilon = 0.04 * cv2.arcLength(maxContour, True)
+        
+        # [STEP 2-D-b] Approximates the given contour with a polygon within the specified error range (epsilon).
         approx = cv2.approxPolyDP(maxContour, epsilon, True)
-        print(approx)
+        
+        # [STEP 2-D-c] Convert valid apporx
         approx = convertValidApprox(
             source=minAreaImgV1,
             approx=approx,
@@ -238,6 +267,7 @@ def detectIdCard(imgPath: str ='./images/kevin_id_card.jpg'):
         cv2.waitKey(0)
         print('yaho 👿')
         
+        # [STEP 2-E] Recover perspective conversion
         leftTop     = approx[0][1:]
         rightTop    = approx[1][1:]
         leftBtm     = approx[2][1:]
@@ -262,17 +292,20 @@ def detectIdCard(imgPath: str ='./images/kevin_id_card.jpg'):
         cv2.imshow(imgPath, result)
         cv2.waitKey(0)
         
+        # [STEP 3] Enhance text clarity
+        # [STEP 3-A] Convert to grayscale image
         grayResult = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+        
+        # [STEP 3-B] Convert to blurred, absdiff image
         blurredFactor = 25
         blurredResult = cv2.medianBlur(grayResult, blurredFactor)
         reflectRemovedResult = cv2.absdiff(grayResult, blurredResult)
         
         cv2.imshow(imgPath, reflectRemovedResult)
         cv2.waitKey(0)
-        
-        # [STEP 4] 대조 강화
         hsvResult = reflectRemovedResult
 
+        # [STEP 3-C] Enhace to contrast
         avgColor = np.mean(hsvResult)
         
         brightMask = hsvResult > avgColor
@@ -287,24 +320,7 @@ def detectIdCard(imgPath: str ='./images/kevin_id_card.jpg'):
         cv2.imshow(imgPath, result)
         cv2.waitKey(0)
         
-        print('⭕⭕⭕⭕')
-        print('⭕⭕⭕⭕')
-        print('⭕⭕⭕⭕')
-        print('⭕⭕⭕⭕')
-        print('⭕⭕⭕⭕')
-        
-        # [STEP 5] Scale 강화
-        # contrastFactor = 1.5
-        # enhancedResult = cv2.convertScaleAbs(result, alpha=contrastFactor, beta=0)
-        # cv2.imshow(imgPath, enhancedResult)
-        # cv2.waitKey(0)
-        
-        print('❌❌❌❌')
-        print('❌❌❌❌')
-        print('❌❌❌❌')
-        print('❌❌❌❌')
-        print('❌❌❌❌')
-        # [STEP 6] 배색팽창(Dialation) 강화
+        # [STEP 3-D] Dialation
         thicknessFactor = 1.5
         _, binaryResult = cv2.threshold(result, np.mean(result) - 7, 255, cv2.THRESH_BINARY)
         cv2.imshow(imgPath, binaryResult)
@@ -318,8 +334,8 @@ def detectIdCard(imgPath: str ='./images/kevin_id_card.jpg'):
         dialationResult = cv2.dilate(binaryResult, dialationKernel, iterations=1)
         cv2.imshow(imgPath, dialationResult)
         cv2.waitKey(0)
-        # [STEP 7] 노이즈 제거(Median Filter) 사용
         
+        # [STEP 3-E] Remove Noise
         medianKernelSize = 3
         deNoisedResult = cv2.medianBlur(dialationResult, medianKernelSize)
         cv2.imshow(imgPath, deNoisedResult)
@@ -348,15 +364,15 @@ if __name__ == '__main__':
     absPath = os.getcwd()
     
     imgPathList = [
-        'images/kevin_id_card_rotated_01.jpg',
-        'images/kevin_id_card_rotated_02.jpg',
-        'images/kevin_id_card_rotated_03.jpg',
-        'images/kevin_id_card_rotated_04.jpg',
-        'images/kevin_id_card_slanted_01.jpg',
-        'images/kevin_id_card_slanted_02.jpg',
-        'images/kevin_id_card_slanted_03.jpg',
-        'images/kevin_id_card_slanted_04.jpg',
-        'images/kevin_id_card.jpg',
+        'images/secure/kevin_id_card_rotated_01.jpg',
+        'images/secure/kevin_id_card_rotated_02.jpg',
+        'images/secure/kevin_id_card_rotated_03.jpg',
+        'images/secure/kevin_id_card_rotated_04.jpg',
+        'images/secure/kevin_id_card_slanted_01.jpg',
+        'images/secure/kevin_id_card_slanted_02.jpg',
+        'images/secure/kevin_id_card_slanted_03.jpg',
+        'images/secure/kevin_id_card_slanted_04.jpg',
+        'images/secure/kevin_id_card.jpg',
     ]
     
     for imgPath in imgPathList:    
