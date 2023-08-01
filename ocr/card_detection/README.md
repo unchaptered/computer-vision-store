@@ -33,6 +33,3 @@
 > The following conditions must be followed:
 > 
 > Source Indication - The source or copyright holder of a public work must be indicated. For this purpose, if it is possible to provide a hyperlink to the source online, you should provide that link. However, in the process of indicating the source, the user shall not make an indication that may be mistaken by a third party as if a public institution sponsors the user or there is a special relationship between the public institution and the user.
-
-## Module Description
-
