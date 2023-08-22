@@ -23,13 +23,13 @@ I used `conda 23.1.0`.
 - Install environment
 
 ```cmd
-conda env create -f requirements-conda.txt
+conda env create -f requirements-*.yml
 ```
 
 - Export environment
 
 ```cmd
-conda env export > requirements-conda.txt
+conda env export > requirements-*.yml
 ```
 
 ### A.2. Check Graphic Card Name
@@ -44,23 +44,23 @@ conda env export > requirements-conda.txt
 
 1. Install NVIDIDA DRIVER for `NVIDIA GeForce RTX 3080 Laptop GPU` or your instances.
 
-- link :  https://www.nvidia.com/download/index.aspx
+- link : https://www.nvidia.com/download/index.aspx
 
 <image style="width: 600px;" src="./images/docs/02_install-nvidia-drvier.png"/>
 
 ### A.4. Check Compatibility
 
 1. Check Graphics Card Compatibility among `NVIDIA GeForce RTX 3080 Laptop GPU` and **CUDA Computing Power** <br>
-    -> `NVIDIA GeForce RTX 3080` supports [CUDA Computing Function 8.6](https://en.wikipedia.org/wiki/GeForce_30_series#cite_note-34)
+   -> `NVIDIA GeForce RTX 3080` supports [CUDA Computing Function 8.6](https://en.wikipedia.org/wiki/GeForce_30_series#cite_note-34)
 
 2. Check Python 3.8.16 Compatibility among CUDA and CUDDN <br>
-    -> [Deprecation of CUDA 11.6 and Python 3.7 Support](https://pytorch.org/blog/deprecation-cuda-python-support/)
+   -> [Deprecation of CUDA 11.6 and Python 3.7 Support](https://pytorch.org/blog/deprecation-cuda-python-support/)
 
-| PyTorch Version   |	Python	|   Stable CUDA     |   Experimental CUDA |
-| ----------------- | -------- | ------------ | ---------------------------- |
-| 2.0	|   >=3.8, <=3.11	|   CUDA 11.7, CUDNN 8.5.0.96	|   CUDA 11.8, CUDNN 8.7.0.84 |
-| 1.13	|   >=3.7, <=3.10	|   CUDA 11.6, CUDNN 8.3.2.44	|   CUDA 11.7, CUDNN 8.5.0.96 |
-| 1.12	|   >=3.7, <=3.10	|   CUDA 11.3, CUDNN 8.3.2.44	|   CUDA 11.6, CUDNN 8.3.2.44 |
+| PyTorch Version | Python        | Stable CUDA               | Experimental CUDA         |
+| --------------- | ------------- | ------------------------- | ------------------------- |
+| 2.0             | >=3.8, <=3.11 | CUDA 11.7, CUDNN 8.5.0.96 | CUDA 11.8, CUDNN 8.7.0.84 |
+| 1.13            | >=3.7, <=3.10 | CUDA 11.6, CUDNN 8.3.2.44 | CUDA 11.7, CUDNN 8.5.0.96 |
+| 1.12            | >=3.7, <=3.10 | CUDA 11.3, CUDNN 8.3.2.44 | CUDA 11.6, CUDNN 8.3.2.44 |
 
 - [CUDA Toolkit 11.7 Downloads](https://developer.nvidia.com/cuda-11-7-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_network)
 - [Download cuDNN v8.5.0 (August 8th, 2022), for CUDA 11.x](https://developer.nvidia.com/rdp/cudnn-archive)

@@ -11,5 +11,10 @@ secure/*
 */secrets/*
 */secure/*
 
-# YOLO Files
-*.pt
+*.MOV
+
+# Models
+!/models
+
+# Secrets
+.env
