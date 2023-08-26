@@ -31,7 +31,8 @@ while cap.isOpened():
     if k == 27:
         break
 
-    cv2.imshow('Img', img)
+    resImg = cv2.resize(img, (int(1920*0.7), int(1080*0.7)))
+    cv2.imshow('Img', resImg)
 
 # Release and destroy all windows before termination
 cap.release()
